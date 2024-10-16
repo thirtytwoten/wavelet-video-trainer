@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opacity WebSocket Demo</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f4f4;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      text-align: center;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 24px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Current Opacity</h1>
+    <p id="opacity-value">0.5</p>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+  <script>
+    // Establish a WebSocket connection with the server
+    const socket = io();
+    // socket.on('connect', () => {
+    //     console.log('WebSocket connection established');
+    // });
+    // socket.on('disconnect', () => {
+    //     console.log('WebSocket connection disconnected');
+    // });
+
+    // Listen for 'update_opacity' event from the server
+    socket.on('update_opacity', (data) => {
+      const opacity = data?.opacity;
+      if(opacity) {
+        // console.log('Received new opacity:', opacity);
+        document.getElementById('opacity-value').innerText = opacity.toFixed(2);
+      }
+    });
+  </script>
+</body>
+</html>
