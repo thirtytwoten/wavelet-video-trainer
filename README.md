@@ -4,10 +4,12 @@ embedded youtube video web app that dims sound and video brightness based on val
 
 ## To run this app locally:
 
-`% git clone https://github.com/thirtytwoten/wavelet-video-trainer.git`
-`% cd wavelet-video-trainer`
-`% python3 -m pip install -r requirements.txt`
-`% python3 app.py`
+```
+% git clone https://github.com/thirtytwoten/wavelet-video-trainer.git
+% cd wavelet-video-trainer
+% python3 -m pip install -r requirements.txt
+% python3 app.py
+```
 
 Open web app running on localhost:5000 on web browser passing in video id of some youtube video as the 'video' url param, e.g. http://localhost:5000/?video=SOCrBa8peCg
 
