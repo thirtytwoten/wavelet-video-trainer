@@ -20,6 +20,11 @@ def index():
 # Function to simulate updating opacity
 def update_opacity():
     global opacity
+    
+    # ***** TODO ******
+    # update this to emit values calculated from EEG data
+    # client is listening for 'update_opacity' event
+    # and expects data in the form of {'opacity': opacity} where opacity is float between 0 and 1
     while True:
         # Simulate opacity changes: generate random float between 0 and 1
         opacity = random.uniform(0, 1)
