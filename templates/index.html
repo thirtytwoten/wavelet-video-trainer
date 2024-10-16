@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video with Dynamic Overlay</title>
+  <title>Video with Dynamic Overlay & Volume</title>
   <style>
     body, html {
       margin: 0;
@@ -38,19 +38,14 @@
       width: 100%;
       height: 100%;
       background-color: black;
-      opacity: 0.25; /* Default opacity */
+      opacity: 0.25;
       pointer-events: none;
     }
   </style>
 </head>
 <body>
   <div id="container">
-    <!-- YouTube embed -->
-    <iframe 
-      id="youtube-video"
-      allow="autoplay; fullscreen" 
-      allowfullscreen>
-    </iframe>
+    <div id="player"></div>
 
     <!-- Overlay that changes opacity based on data from server -->
     <div id="overlay"></div>
@@ -59,6 +54,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
 
   <script>
+    let opacityVal = 0.25;
+    let player;
+    
     // Function to get URL parameter
     function getParameterByName(name, url = window.location.href) {
       name = name.replace(/[\[\]]/g, '\\$&');
@@ -83,10 +81,23 @@
         alert('No video ID entered. The video cannot be displayed.');
       }
     } else {
-      // If there's a video ID, set the YouTube iframe source
-      const iframe = document.getElementById('youtube-video');
-      iframe.src = `https://www.youtube.com/embed/${videoID}`;
+      function onYouTubeIframeAPIReady() {
+        // console.log('onYouTubeIframeAPIReady');
+        player = new YT.Player('player', {
+          height: '100%',
+          width: '100%',
+          videoId: videoID,
+          'onReady': (event) => {
+            event.target.playVideo();
+          }
+        });
+      }
     }
+
+    let tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    let firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
     // Establish a WebSocket connection with the server
     const socket = io();
@@ -96,8 +107,14 @@
     socket.on('update_opacity', (data) => {
       const opacity = data?.opacity;
       if(opacity) {
+        opacityVal = opacity.toFixed(2);
         // console.log('Received new opacity:', opacity);
-        overlay.style.opacity = opacity.toFixed(2);
+        overlay.style.opacity = 1 - opacityVal; //sets the blackout opacity
+        if(player?.setVolume) {
+          const newVolume = parseInt(100 * opacity);
+          player.setVolume(newVolume);
+          // console.log('Volume set to:', newVolume);
+        }
       }
     });
 
